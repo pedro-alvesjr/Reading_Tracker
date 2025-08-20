@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Path
 from pydantic import BaseModel
 from models import Books
 from database import Base, SessionLocal, engine
@@ -28,6 +28,12 @@ class BookRequest(BaseModel):
 @app.get('/books')
 def read_all(db: db_dependency):
     return db.query(Books).all()
+
+
+@app.get('/books/{book_id}')
+def read_by_id(db: db_dependency, book_id: int = Path(gt=0)):
+    return db.query(Books).filter(Books.id == book_id).first()
+
 
 @app.post('/books/')
 def add_book(db: db_dependency, book_request: BookRequest):
