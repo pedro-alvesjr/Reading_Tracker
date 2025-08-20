@@ -2,10 +2,12 @@ from typing import Annotated
 from fastapi import Depends, FastAPI
 from pydantic import BaseModel
 from models import Books
-from database import SessionLocal
+from database import Base, SessionLocal, engine
 from sqlalchemy.orm import Session
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 def get_db():
     db = SessionLocal()
@@ -32,4 +34,4 @@ def add_book(db: db_dependency, book_request: BookRequest):
     book_model = Books(**book_request.model_dump())
     
     db.add(book_model)
-    db.commit
+    db.commit()
