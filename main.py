@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import Depends, FastAPI, Path
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from models import Books
 from database import Base, SessionLocal, engine
 from sqlalchemy.orm import Session
@@ -19,11 +19,10 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 class BookRequest(BaseModel):
-    id: int
-    title: str
-    author: str
+    title: str = Field(min_length=1, max_length=30)
+    author: str = Field(min_length=1, max_length=30)
     status: bool
-    progress: int
+    progress: int = Field(gt=-1, lt=101)
 
 @app.get('/books')
 def read_all(db: db_dependency):
@@ -41,3 +40,4 @@ def add_book(db: db_dependency, book_request: BookRequest):
     
     db.add(book_model)
     db.commit()
+
