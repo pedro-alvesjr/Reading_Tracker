@@ -41,7 +41,7 @@ def add_book(db: db_dependency, book_request: BookRequest):
     db.add(book_model)
     db.commit()
 
-@app.put('/books')
+@app.put('/books/{book_id}')
 def update_book(db: db_dependency, book_request: BookRequest, book_id: int = Path(gt=0)):
     updated_book = db.query(Books).filter(Books.id == book_id).first()
 
