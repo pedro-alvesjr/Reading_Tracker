@@ -34,7 +34,7 @@ def read_by_id(db: db_dependency, book_id: int = Path(gt=0)):
     return db.query(Books).filter(Books.id == book_id).first()
 
 
-@app.post('/books/')
+@app.post('/books')
 def add_book(db: db_dependency, book_request: BookRequest):
     book_model = Books(**book_request.model_dump())
     
