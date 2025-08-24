@@ -54,3 +54,13 @@ def update_book(db: db_dependency, book_request: BookRequest, book_id: int = Pat
     updated_book.progress = book_request.progress
 
     db.commit()
+
+@app.delete('/books/{book_id}')
+def delete_book(db: db_dependency, book_id: int = Path(gt=0)):
+    book_to_delete = db.query(Books).filter(Books.id == book_id).first()
+    
+    if book_to_delete is None:
+        raise HTTPException(status_code=404, detail='Book ID not found.')
+
+    db.query(Books).filter(Books.id == book_id).delete()
+    db.commit()
