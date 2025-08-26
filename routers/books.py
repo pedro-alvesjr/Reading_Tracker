@@ -1,11 +1,11 @@
 from typing import Annotated
-from fastapi import Depends, FastAPI, HTTPException, Path
+from fastapi import Depends, APIRouter, HTTPException, Path
 from pydantic import BaseModel, Field
 from models import Books
 from database import Base, SessionLocal, engine
 from sqlalchemy.orm import Session
 
-app = FastAPI()
+router = APIRouter()
 
 Base.metadata.create_all(bind=engine)
 
@@ -24,24 +24,24 @@ class BookRequest(BaseModel):
     status: bool
     progress: int = Field(gt=-1, lt=101)
 
-@app.get('/books')
+@router.get('/books')
 def read_all(db: db_dependency):
     return db.query(Books).all()
 
 
-@app.get('/books/{book_id}')
+@router.get('/books/{book_id}')
 def read_by_id(db: db_dependency, book_id: int = Path(gt=0)):
     return db.query(Books).filter(Books.id == book_id).first()
 
 
-@app.post('/books')
+@router.post('/books')
 def add_book(db: db_dependency, book_request: BookRequest):
     book_model = Books(**book_request.model_dump())
     
     db.add(book_model)
     db.commit()
 
-@app.put('/books/{book_id}')
+@router.put('/books/{book_id}')
 def update_book(db: db_dependency, book_request: BookRequest, book_id: int = Path(gt=0)):
     updated_book = db.query(Books).filter(Books.id == book_id).first()
 
@@ -55,7 +55,7 @@ def update_book(db: db_dependency, book_request: BookRequest, book_id: int = Pat
 
     db.commit()
 
-@app.delete('/books/{book_id}')
+@router.delete('/books/{book_id}')
 def delete_book(db: db_dependency, book_id: int = Path(gt=0)):
     book_to_delete = db.query(Books).filter(Books.id == book_id).first()
     
