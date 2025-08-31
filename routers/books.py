@@ -26,16 +26,25 @@ class BookRequest(BaseModel):
 
 @router.get('/books')
 def read_all(db: db_dependency):
+    """
+    Retrive all books for the user.
+    """
     return db.query(Books).all()
 
 
 @router.get('/books/{book_id}')
 def read_by_id(db: db_dependency, book_id: int = Path(gt=0)):
+    """
+    Retrive books according to its ID.
+    """
     return db.query(Books).filter(Books.id == book_id).first()
 
 
 @router.post('/books')
 def add_book(db: db_dependency, book_request: BookRequest):
+    """
+    Create a new book item for the authenticated user.
+    """
     book_model = Books(**book_request.model_dump())
     
     db.add(book_model)
@@ -43,6 +52,9 @@ def add_book(db: db_dependency, book_request: BookRequest):
 
 @router.put('/books/{book_id}')
 def update_book(db: db_dependency, book_request: BookRequest, book_id: int = Path(gt=0)):
+    """
+    Update the book info according to the ID provided by the user.
+    """
     updated_book = db.query(Books).filter(Books.id == book_id).first()
 
     if updated_book is None:
@@ -57,6 +69,9 @@ def update_book(db: db_dependency, book_request: BookRequest, book_id: int = Pat
 
 @router.delete('/books/{book_id}')
 def delete_book(db: db_dependency, book_id: int = Path(gt=0)):
+    """
+    Delete book according to the ID provided by the user.
+    """
     book_to_delete = db.query(Books).filter(Books.id == book_id).first()
     
     if book_to_delete is None:
