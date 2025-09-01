@@ -29,11 +29,22 @@ db_dependency = Annotated[Session, Depends(get_db)]
 SECRET_KEY = 'Zx7$wR!3M2q#L8uH%@fD9vE&cS0Jp^'
 ALGORITHM = 'HS256'
 
+
 class UserRequest(BaseModel):
     username: str = Field(min_length=1, max_length=30)
     email: str = Field(min_length=1, max_length=30)
     password: str
     role: str = Field(min_length=1, max_length=30)
+
+
+def authenticate_user(username: str, password: str, db: db_dependency):
+    user = db.query(Users).filter(Users.username == username).first()
+    if not user:
+        return False
+    if not bcrypt_context.verify(password, user.hashed_password):
+        return False
+    return True
+
 
 @router.post('/user')
 def create_user(db: db_dependency, new_user_request: UserRequest):
