@@ -2,7 +2,7 @@ from datetime import timedelta
 from typing import Annotated
 from fastapi import Depends, APIRouter, HTTPException, Path
 from pydantic import BaseModel, Field
-from models import Books
+from models import Books, Users
 from database import Base, SessionLocal, engine
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
@@ -30,8 +30,20 @@ SECRET_KEY = 'Zx7$wR!3M2q#L8uH%@fD9vE&cS0Jp^'
 ALGORITHM = 'HS256'
 
 class UserRequest(BaseModel):
-    id: int = Field(gt=0)
     username: str = Field(min_length=1, max_length=30)
     email: str = Field(min_length=1, max_length=30)
-    hashed_password: str
+    password: str
     role: str = Field(min_length=1, max_length=30)
+
+@router.post('/user')
+def create_user(db: db_dependency, new_user_request: UserRequest):
+    
+    new_user = Users(
+    username = new_user_request.username,
+    email = new_user_request.email,
+    hashed_password = bcrypt_context.hash(new_user_request.password),
+    role = new_user_request.role
+    )
+
+    db.add(new_user)
+    db.commit()
