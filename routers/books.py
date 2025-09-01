@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Depends, APIRouter, HTTPException, Path
+from fastapi import Depends, APIRouter, HTTPException, Path, status
 from pydantic import BaseModel, Field
 from models import Books
 from database import Base, SessionLocal, engine
@@ -24,7 +24,7 @@ class BookRequest(BaseModel):
     status: bool
     progress: int = Field(gt=-1, lt=101)
 
-@router.get('/books')
+@router.get('/books', status_code=status.HTTP_200_OK)
 def read_all(db: db_dependency):
     """
     Retrive all books for the user.
@@ -32,7 +32,7 @@ def read_all(db: db_dependency):
     return db.query(Books).all()
 
 
-@router.get('/books/{book_id}')
+@router.get('/books/{book_id}', status_code=status.HTTP_200_OK)
 def read_by_id(db: db_dependency, book_id: int = Path(gt=0)):
     """
     Retrive books according to its ID.
@@ -40,8 +40,8 @@ def read_by_id(db: db_dependency, book_id: int = Path(gt=0)):
     return db.query(Books).filter(Books.id == book_id).first()
 
 
-@router.post('/books')
-def add_book(db: db_dependency, book_request: BookRequest):
+@router.post('/books', status_code=status.HTTP_201_CREATED)
+def create_book(db: db_dependency, book_request: BookRequest):
     """
     Create a new book item for the authenticated user.
     """
@@ -50,7 +50,7 @@ def add_book(db: db_dependency, book_request: BookRequest):
     db.add(book_model)
     db.commit()
 
-@router.put('/books/{book_id}')
+@router.put('/books/{book_id}', status_code=status.HTTP_204_NO_CONTENT)
 def update_book(db: db_dependency, book_request: BookRequest, book_id: int = Path(gt=0)):
     """
     Update the book info according to the ID provided by the user.
@@ -67,7 +67,7 @@ def update_book(db: db_dependency, book_request: BookRequest, book_id: int = Pat
 
     db.commit()
 
-@router.delete('/books/{book_id}')
+@router.delete('/books/{book_id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_book(db: db_dependency, book_id: int = Path(gt=0)):
     """
     Delete book according to the ID provided by the user.
