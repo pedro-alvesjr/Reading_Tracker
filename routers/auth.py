@@ -5,13 +5,17 @@ from pydantic import BaseModel, Field
 from models import Books
 from database import Base, SessionLocal, engine
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt
+from passlib.context import CryptContext
 
 router = APIRouter(
     prefix='/auth',
     tags=['auth']
 )
+
+bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+password_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 def get_db():
     db = SessionLocal()
