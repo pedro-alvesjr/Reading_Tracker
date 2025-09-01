@@ -29,3 +29,9 @@ db_dependency = Annotated[Session, Depends(get_db)]
 SECRET_KEY = 'Zx7$wR!3M2q#L8uH%@fD9vE&cS0Jp^'
 ALGORITHM = 'HS256'
 
+class UserRequest(BaseModel):
+    id: int = Field(gt=0)
+    username: str = Field(min_length=1, max_length=30)
+    email: str = Field(min_length=1, max_length=30)
+    hashed_password: str
+    role: str = Field(min_length=1, max_length=30)
