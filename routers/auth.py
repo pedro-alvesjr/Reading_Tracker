@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 from fastapi import Depends, APIRouter, HTTPException, Path
 from pydantic import BaseModel, Field
@@ -44,6 +44,12 @@ def authenticate_user(username: str, password: str, db: db_dependency):
     if not bcrypt_context.verify(password, user.hashed_password):
         return False
     return True
+
+
+def create_access_token(username: str, user_id: int, user_role: str, expire_time: timedelta):
+    expires = datetime.now(UTC) + expire_time
+    encode = {'sub': username, 'id': user_id, 'role': user_role, 'exp': expires}
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 @router.post('/user')
