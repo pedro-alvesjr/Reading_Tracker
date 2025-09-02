@@ -37,6 +37,11 @@ class UserRequest(BaseModel):
     role: str = Field(min_length=1, max_length=30)
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
 def authenticate_user(username: str, password: str, db: db_dependency):
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
