@@ -52,6 +52,9 @@ def authenticate_user(username: str, password: str, db: db_dependency):
 
 
 def create_access_token(username: str, user_id: int, user_role: str, expire_time: timedelta):
+    """
+    Create the access JWT token and encode username, id, role and expiration in it.
+    """
     expires = datetime.now(UTC) + expire_time
     encode = {'sub': username, 'id': user_id, 'role': user_role, 'exp': expires}
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
