@@ -43,6 +43,10 @@ class Token(BaseModel):
 
 
 def authenticate_user(username: str, password: str, db: db_dependency):
+    """
+    Check if user exists in the DB. If not, it returns False.  If it is in the DB, it checks
+    the password.
+    """
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
         return False
