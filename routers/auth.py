@@ -65,6 +65,9 @@ def create_access_token(username: str, user_id: int, user_role: str, expire_time
 
 
 def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+    """
+    Get current user to check whether the token is still valid, or if it has been altered.
+    """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         username: str = payload.get('sub')
