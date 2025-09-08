@@ -83,7 +83,9 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
 @router.post('/user')
 def create_user(db: db_dependency, new_user_request: UserRequest):
-    
+    """
+    Creates a new user and adds it to the Users table.
+    """
     new_user = Users(
     username = new_user_request.username,
     email = new_user_request.email,
