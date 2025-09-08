@@ -97,6 +97,11 @@ def create_user(db: db_dependency, new_user_request: UserRequest):
 @router.post('/token', response_model=Token)
 def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                            db: db_dependency):
+    """
+    Authenticate a user and return a JWT access token.
+    This endpoint validates the provided username and password against the database.
+    If the credentials are correct, it generates a JWT token valid for 20 minutes.
+    """
     user = authenticate_user(form_data.username, form_data.password, db)
     
     if not user:
