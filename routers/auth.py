@@ -52,7 +52,7 @@ def authenticate_user(username: str, password: str, db: db_dependency):
         return False
     if not bcrypt_context.verify(password, user.hashed_password):
         return False
-    return True
+    return user
 
 
 def create_access_token(username: str, user_id: int, user_role: str, expire_time: timedelta):
