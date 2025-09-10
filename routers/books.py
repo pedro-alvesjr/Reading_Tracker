@@ -27,7 +27,8 @@ class BookRequest(BaseModel):
     progress: int = Field(gt=-1, lt=101)
 
 @router.get('/books', status_code=status.HTTP_200_OK)
-def read_all(db: db_dependency, user: user_dependency):
+def read_all(db: db_dependency, 
+             user: user_dependency):
     """
     Retrive all books for the user.
     """
@@ -39,7 +40,9 @@ def read_all(db: db_dependency, user: user_dependency):
 
 
 @router.get('/books/{book_id}', status_code=status.HTTP_200_OK)
-def read_by_id(db: db_dependency, user: user_dependency, book_id: int = Path(gt=0)):
+def read_by_id(db: db_dependency, 
+               user: user_dependency, 
+               book_id: int = Path(gt=0)):
     """
     Retrive books according to its ID.
     """
@@ -51,7 +54,9 @@ def read_by_id(db: db_dependency, user: user_dependency, book_id: int = Path(gt=
 
 
 @router.post('/books', status_code=status.HTTP_201_CREATED)
-def create_book(db: db_dependency, user: user_dependency, book_request: BookRequest):
+def create_book(db: db_dependency, 
+                user: user_dependency, 
+                book_request: BookRequest):
     """
     Create a new book item for the authenticated user.
     """
@@ -79,7 +84,8 @@ def update_book(db: db_dependency,
     updated_book = db.query(Books).filter(Books.id == book_id).first()
 
     if updated_book is None:
-        raise HTTPException(status_code=404, detail='Book ID not found.')
+        raise HTTPException(status_code=404, 
+                            detail='Book ID not found.')
 
     updated_book.title = book_request.title
     updated_book.author = book_request.author
@@ -89,7 +95,9 @@ def update_book(db: db_dependency,
     db.commit()
 
 @router.delete('/books/{book_id}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_book(db: db_dependency, user: user_dependency, book_id: int = Path(gt=0)):
+def delete_book(db: db_dependency, 
+                user: user_dependency, 
+                book_id: int = Path(gt=0)):
     """
     Delete book according to the ID provided by the user.
     """

@@ -34,7 +34,8 @@ class PasswordVerification(BaseModel):
     new_password: str = Field(min_length=5)
 
 @router.get('/user', status_code=status.HTTP_200_OK)
-def get_user(user: user_dependency, db: db_dependency):
+def get_user(user: user_dependency, 
+             db: db_dependency):
 
     if user is None:
         raise HTTPException(
