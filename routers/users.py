@@ -1,12 +1,9 @@
-from datetime import UTC, datetime, timedelta
 from typing import Annotated
 from fastapi import Depends, APIRouter, HTTPException, Path, status
 from pydantic import BaseModel, Field
-from models import Books, Users
-from database import Base, SessionLocal, engine
+from models import Users
+from database import SessionLocal
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from jose import jwt
 from passlib.context import CryptContext
 
 from routers.auth import get_current_user
@@ -17,7 +14,6 @@ router = APIRouter(
 )
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 def get_db():
     db = SessionLocal()
@@ -63,5 +59,4 @@ def change_password(user: user_dependency,
 
     new_password_user.hashed_password = bcrypt_context.hash(user_model.new_password)
 
-    db.add(new_password_user)
     db.commit()
