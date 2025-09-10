@@ -33,7 +33,7 @@ class PasswordVerification(BaseModel):
     current_password: str
     new_password: str = Field(min_length=5)
 
-@router.get('/user', status_code=status.HTTP_200_OK)
+@router.get('/me', status_code=status.HTTP_200_OK)
 def get_user(user: user_dependency, 
              db: db_dependency):
 
@@ -44,3 +44,24 @@ def get_user(user: user_dependency,
             )
     
     return db.query(Users).filter(Users.id == user.get('id')).first()
+
+@router.put('/me/password', status_code=status.HTTP_204_NO_CONTENT)
+def change_password(user: user_dependency,
+                    db: db_dependency,
+                    user_model: PasswordVerification):
+    
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail='User not authenticated.')
+    
+    new_password_user = db.query(Users).filter(Users.id == user.get('id')).first()
+
+    if not bcrypt_context.verify(user_model.current_password,
+                                 new_password_user.hashed_password):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail='Password is incorrect.')
+
+    new_password_user.hashed_password = bcrypt_context.hash(user_model.new_password)
+
+    db.add(new_password_user)
+    db.commit()
