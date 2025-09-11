@@ -5,7 +5,6 @@ from models import Users
 from database import SessionLocal
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-
 from routers.auth import get_current_user
 
 router = APIRouter(
@@ -51,6 +50,10 @@ def change_password(user: user_dependency,
                             detail='User not authenticated.')
     
     new_password_user = db.query(Users).filter(Users.id == user.get('id')).first()
+
+    if not new_password_user:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail='User not found.')
 
     if not bcrypt_context.verify(user_model.current_password,
                                  new_password_user.hashed_password):
