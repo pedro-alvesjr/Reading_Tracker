@@ -8,8 +8,8 @@ from passlib.context import CryptContext
 from routers.auth import get_current_user
 
 router = APIRouter(
-    prefix='/users',
-    tags=['users']
+    prefix='/admin',
+    tags=['admin']
 )
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
