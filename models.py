@@ -10,7 +10,7 @@ class Books(Base):
     author = Column(String)
     status = Column(Boolean, default = True)
     progress = Column(Integer)
-    owner_id = Column(Integer, ForeignKey=True)
+    owner_id = Column(Integer, ForeignKey('users.id'))
 
 class Users(Base):
     __tablename__ = 'users'

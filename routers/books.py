@@ -36,7 +36,7 @@ def read_by_user(db: db_dependency,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='User not authenticated')
 
-    return db.query(Books).filter(Books.owner_id == user.get('id')).all()
+    return db.query(Books).all()
 
 
 @router.get('/books/{book_id}', status_code=status.HTTP_200_OK)
@@ -64,7 +64,7 @@ def create_book(db: db_dependency,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='User not authenticated.')
 
-    book_model = Books(**book_request.model_dump())
+    book_model = Books(**book_request.model_dump(), owner_id = user.get('id'))
     
     db.add(book_model)
     db.commit()
