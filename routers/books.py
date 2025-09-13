@@ -36,7 +36,7 @@ def read_by_user(db: db_dependency,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='User not authenticated')
 
-    return db.query(Books).all()
+    return db.query(Books).filter(Books.owner_id == user.get('id') ).all()
 
 
 @router.get('/books/{book_id}', status_code=status.HTTP_200_OK)
