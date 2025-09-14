@@ -50,7 +50,8 @@ def read_by_id(db: db_dependency,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='User not authenticated.')
 
-    return db.query(Books).filter(Books.id == book_id).first()
+    return db.query(Books).filter(Books.id == book_id)\
+        .filter(Books.owner_id == user.get('id')).first()
 
 
 @router.post('/books', status_code=status.HTTP_201_CREATED)
@@ -81,7 +82,8 @@ def update_book(db: db_dependency,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='User not authenticated.')
 
-    updated_book = db.query(Books).filter(Books.id == book_id).first()
+    updated_book = db.query(Books).filter(Books.id == book_id)\
+        .filter(Books.owner_id == user.get('id')).first()
 
     if updated_book is None:
         raise HTTPException(status_code=404, 
@@ -105,7 +107,8 @@ def delete_book(db: db_dependency,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='User not authenticated.')
 
-    book_to_delete = db.query(Books).filter(Books.id == book_id).first()
+    book_to_delete = db.query(Books).filter(Books.id == book_id)\
+        .filter(Books.owner_id == user.get('id')).first()
     
     if book_to_delete is None:
         raise HTTPException(status_code=404, detail='Book ID not found.')
