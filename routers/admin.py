@@ -33,4 +33,4 @@ def read_all(user: user_dependency, db: db_dependency):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='User not authenticated.')
     
-    return db.get(Books).all
+    return db.query(Books).all()
