@@ -30,7 +30,7 @@ class BookRequest(BaseModel):
 def read_by_user(db: db_dependency, 
              user: user_dependency):
     """
-    Retrive all books for the user.
+    Retrieve all books for the user.
     """
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
@@ -44,7 +44,7 @@ def read_by_id(db: db_dependency,
                user: user_dependency, 
                book_id: int = Path(gt=0)):
     """
-    Retrive books according to its ID.
+    Retrieve books according to its ID.
     """
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
